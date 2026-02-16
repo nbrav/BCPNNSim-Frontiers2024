@@ -1,0 +1,16 @@
+#!/bin/bash -l
+#SBATCH --job-name=ecortex
+#SBATCH --output=out.txt
+#SBATCH --account=naiss2023-5-484
+#SBATCH --time=0:30:00
+#SBATCH --partition=gpu
+#SBATCH --nodes=1
+#SBATCH --ntasks=3
+export MPICH_GPU_SUPPORT_ENABLED=1
+ml rocm/5.0.2
+ml craype-accel-amd-gfx90a
+# time srun apps/reprlearn/reprlearnmain apps/reprlearn/reprlearn.par
+time srun apps/hidassospk/hidassospk apps/hidassospk/hidassospk.par
+# time srun apps/deepassonet/deepassonet apps/deepassonet/deepassonet.par
+# rocm-smi --showtoponuma # to see cpu-gpu numa affinity
+# nsys profile --trace=cuda,mpi,nvtx --mpi-impl=openmpi --stats=true # add this before executable to profile

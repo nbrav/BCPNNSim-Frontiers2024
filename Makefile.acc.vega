@@ -1,0 +1,32 @@
+SRC_DIR		= ./src_acc
+DEPS 		= $(SRC_DIR)/Pop.h $(SRC_DIR)/Prj.h $(SRC_DIR)/Globals.h $(SRC_DIR)/LinearSGD.h $(SRC_DIR)/Pats.h $(SRC_DIR)/Parseparam.h
+OBJS 		= $(SRC_DIR)/Pop.o $(SRC_DIR)/Prj.o $(SRC_DIR)/Globals.o $(SRC_DIR)/LinearSGD.o $(SRC_DIR)/Pats.o $(SRC_DIR)/Parseparam.o 
+
+CC 		= nvcc
+CXX		= nvc++
+
+INCLUDE		= -I$(SRC_DIR)	 # for header files
+
+# OPENACC FLAGS # -acc -lcuda -D_CUDA -lcurand # nvc++
+# CUDA FLAGS # -x cu # nvcc
+
+CXX_FLAGS	= -O3 -acc -lcurand -lcuda # -acc -Minfo=accel -gpu=cc80 -D_CUDA # -gpu=managed 
+CXX_LFLAGS 	= # -lcudart # -lcuda -lcurand # -cudalib=curand
+
+CUDA_FLAGS	= -acc -lcuda -lcurand -D_CUDA # -x cu
+
+%.o: %.cpp $(DEPS)
+	$(CXX) -c -o $@ $< $(INCLUDE) $(CXX_FLAGS) $(CUDA_FLAGS)
+
+reprlearnmain: reprlearnmain.o $(OBJS)
+	$(CXX) -o reprlearnmain $^ $(CXX_FLAGS) $(INCLUDE)
+
+deepff3: deepff3.o $(OBJS)
+	$(CXX) -o deepff3 $^ $(CXX_FLAGS) $(INCLUDE) -lcublas
+
+all: reprlearnmain hidassomemr deepff deepassonet
+
+.PHONY: clean
+clean : 
+	rm -f *.o *.bin *.png *.gif *.out *~ core reprlearnmain inpassomem hidassomemr deepff deepff2 deepff3
+	rm $(SRC_DIR)/*.o $(SRC_DIR)/*.bin $(SRC_DIR)/*~

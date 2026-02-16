@@ -1,0 +1,35 @@
+SRC_DIR		= ./src_cuda
+APP_DIR 	= ./apps
+
+DEPS 		= $(SRC_DIR)/Pop.h $(SRC_DIR)/Prj.h $(SRC_DIR)/Globals.h $(SRC_DIR)/LinearSGD.h $(SRC_DIR)/Pats.h $(SRC_DIR)/Parseparam.h $(SRC_DIR)/Logger.h
+OBJS 		= $(SRC_DIR)/Pop.o $(SRC_DIR)/Prj.o $(SRC_DIR)/Globals.o $(SRC_DIR)/LinearSGD.o $(SRC_DIR)/Pats.o $(SRC_DIR)/Parseparam.o $(SRC_DIR)/Logger.o
+
+CXX		= nvcc
+MPICXX		= nvcc
+
+FLAGS		= -arch=sm_80 -O3 
+INCLUDE		= -I$(SRC_DIR)
+LIBS		= -lcudart -lmpi -lcublas -lcurand
+
+%.o: %.cpp $(DEPS)
+	$(CXX) -x cu -c -o $@ $< $(FLAGS) $(INCLUDE)
+
+$(APP_DIR)/reprlearn/reprlearnmain: $(APP_DIR)/reprlearn/reprlearnmain.o $(OBJS)
+	$(MPICXX) -o $@ $^ $(FLAGS) $(INCLUDE) $(LIBS)
+
+$(APP_DIR)/reprlearnspk/reprlearnspkmain: $(APP_DIR)/reprlearnspk/reprlearnspkmain.o $(OBJS)
+	$(MPICXX) -o $@ $^ $(FLAGS) $(INCLUDE) $(LIBS)
+
+$(APP_DIR)/ammain: $(APP_DIR)/ammain.o $(OBJS)
+	$(MPICXX) -o $@ $^ $(FLAGS) $(INCLUDE) $(LIBS)
+
+all: reprlearnmain
+
+.PHONY: clean
+clean : 
+	rm -f *.o *~ *. *.bin *.log *.png *.svg *.out
+	rm -f *.qdrep *.sqlite *nsys-rep
+	rm -f $(SRC_DIR)/*.o $(SRC_DIR)/*~
+	rm -f $(APP_DIR)/reprlearn/*.o $(APP_DIR)/reprlearn/*~ $(APP_DIR)/reprlearn/reprlearnmain
+	rm -f $(APP_DIR)/reprlearnspk/*.o $(APP_DIR)/reprlearnspk/*~ $(APP_DIR)/reprlearnspk/reprlearnspkmain
+	rm -f $(APP_DIR)/ammain/*.o $(APP_DIR)/ammain/*~ $(APP_DIR)/ammain/ammainmain

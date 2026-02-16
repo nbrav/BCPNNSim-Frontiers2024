@@ -1,0 +1,61 @@
+verbosity               1
+seed                    12345
+
+Hin                     784                     # number of hypercolumns in input layer
+Min                     2                     	# number of minicolumns per hypercolumn in input layer
+Hhid                    30                    	# number of hypercolumns in hidden layer
+Mhid                    100                     # number of minicolumns per hypercolumn in hidden layer
+Hout                    1                       # number of hypercolumns in classifier output layer (always 1)
+Mout                    10                      # number of minicolumns per hypercolumn in output layer (labels)
+
+binarize_in		        1
+
+nconnih                 78                      # number of conns from input to hidden layer 
+nconnhh                 10                      # number of conns from hidden to hidden layer 
+nconnhi                 5                    	# number of conns from hidden to input layer 
+
+nlayer                  2 						# number of layers
+
+bgain                   1 						# gain on bias term
+wgain                   1 						# gain on weight term
+
+updconn_interval        200                   	# update connections at regular interval
+updconn_nswapmax		100						# update connections max. num. of swaps
+updconn_threshold		1.1 					# update connections thrshold between active and silent swaps
+
+taum                    0.001             		# (s) time-constant of neuronal membrane, set to dt to nullify
+tauz                    0.005                 	# (s) time-constant of zi- and zj-traces, set to dt to nullify
+taup                    5                       # (s) time-constant of p-traces, set to timestep * ntrpat if 0
+maxfq                   1000 # 100                   	# (Hz) maximum firing rate, set to 1/dt to nullify
+
+actfn                   stcind	       	    	# one of {softmax, stcwta, stcind, wta}
+again                   1 			            # gain on activation function
+
+nstep_gap               25			            # number of steps per gap between pattern
+nstep_ffwd              25	                    # number of steps of feedforward drive
+nstep_overlap           25                      # number of steps of overlap b/w feedforward and recurrent
+nstep_recr              50                     # number of steps of recurrent drive
+
+nampl                   0.001                 	# noise amplitude
+
+nusupepoch              5 # 25                  # number of unsupervised training epochs
+nsupepoch               25                     	# number of supervised classifier training epochs
+
+ntrpat                  1000               	    # number of train patterns
+ntepat                  1000                	# number of test patterns
+nvalpat                 0 			            # number of validation patterns
+
+datadir                 Data/mnist/        # directory for data files
+trimgfile               Raw/mnist_trimg.bin     # train image file
+trlblfile               Raw/mnist_trlbl.bin     # train label file
+teimgfile               Raw/mnist_teimg.bin     # test image file
+telblfile               Raw/mnist_telbl.bin     # test label file
+complete_teimgfile      Complete/mnist_teimg.bin     # test image file
+complete_telblfile      Complete/mnist_telbl.bin     # test image file
+rivalry_teimgfile      	Rivalry/mnist_teimg.bin     # test image file
+rivalry_telblfile      	Rivalry/mnist_telbl.bin     # test image file
+distort_teimgfile      	Distort/mnist_teimg.bin     # test image file
+distort_telblfile      	Distort/mnist_telbl.bin     # test image file
+
+logdir                  /cfs/klemming/scratch/n/nbrav/logs/test-mnist1k/
+logmodelname            .

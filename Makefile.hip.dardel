@@ -1,0 +1,46 @@
+# ml PDC/22.06 rocm/5.0.2 craype-accel-amd-gfx90a anaconda3
+
+SRC_DIR		= ./src_hip
+APP_DIR         = ./apps
+
+DEPS 		= $(SRC_DIR)/Pop.h $(SRC_DIR)/Prj.h $(SRC_DIR)/Globals.h $(SRC_DIR)/Pats.h $(SRC_DIR)/Parseparam.h $(SRC_DIR)/Logger.h
+OBJS 		= $(SRC_DIR)/Pop.o $(SRC_DIR)/Prj.o $(SRC_DIR)/Globals.o $(SRC_DIR)/Pats.o $(SRC_DIR)/Parseparam.o $(SRC_DIR)/Logger.o
+
+CXX		= hipcc
+MPICXX		= hipcc # mpic++ ?
+
+INCLUDE		= -I$(SRC_DIR) # for header files
+
+FLAGS		= -O3
+HIP_FLAGS	= -munsafe-fp-atomics --offload-arch=gfx90a -I/opt/rocm-5.0.2/include/rocrand/ -I/opt/rocm-5.0.2/include/hiprand/ -L/opt/rocm-5.0.2/lib/ -munsafe-fp-atomics -I${MPICH_DIR}/include -L${MPICH_DIR}/lib ${PE_MPICH_GTL_DIR_amd_gfx90a}
+MPIXX_FLAGS	= $(HIP_FLAGS) -lmpi -lhipblas -lhiprand ${PE_MPICH_GTL_LIBS_amd_gfx90a}
+
+%.o: %.cpp $(DEPS)
+	$(CXX) -c -o $@ $< $(INCLUDE) $(FLAGS) $(HIP_FLAGS)
+
+reprlearnmain: $(APP_DIR)/reprlearn/reprlearnmain.o $(OBJS)
+	$(MPICXX) -o $(APP_DIR)/reprlearn/reprlearnmain $^ $(INCLUDE) $(FLAGS) $(MPIXX_FLAGS)
+
+hidassospk: $(APP_DIR)/hidassospk/hidassospk.o $(OBJS)
+	$(MPICXX) -o $(APP_DIR)/hidassospk/hidassospk $^ $(INCLUDE) $(FLAGS) $(MPIXX_FLAGS)
+
+deepassonet: $(APP_DIR)/deepassonet/deepassonet.o $(OBJS)
+	$(MPICXX) -o $(APP_DIR)/deepassonet/deepassonet $^ $(INCLUDE) $(FLAGS) $(MPIXX_FLAGS) 
+
+ammain: ammain.o $(OBJS)
+	$(MPICXX) -o ammain $^ $(INCLUDE) $(FLAGS) $(MPIXX_FLAGS) 
+
+deepff3: deepff3.o $(OBJS)
+	$(CXX) -o deepff3 $^ $(FLAGS) $(INCLUDE) -lcublas
+
+all: reprlearnmain hidassospk hidassomemr deepff deepassonet
+
+.PHONY: clean
+clean : 
+	rm -f *.o *.bin *.log *.png *.svg *.gif *.out out.txt err.txt *~ core reprlearnmain inpassomem hidassomemr deepff deepff2 deepff3 ammain deepassonet
+	rm -f $(SRC_DIR)/*.o $(SRC_DIR)/*.bin $(SRC_DIR)/*~
+	rm -f $(APP_DIR)/reprlearn/*.o $(APP_DIR)/reprlearn/*~ $(APP_DIR)/reprlearn/reprlearnmain
+	rm -f $(APP_DIR)/hidassospk/*.o $(APP_DIR)/hidassospk/*~ $(APP_DIR)/hidassospk/hidassospk
+	rm -f $(APP_DIR)/deepassonet/*.o $(APP_DIR)/deepassonet/*~ $(APP_DIR)/deepassonet/deepassonet
+	rm -f $(APP_DIR)/reprlearnspk/*.o $(APP_DIR)/reprlearnspk/*~ $(APP_DIR)/reprlearnspk/reprlearnspkmain
+	rm -f $(APP_DIR)/ammain/*.o $(APP_DIR)/ammain/*~ $(APP_DIR)/ammain/ammainmain
