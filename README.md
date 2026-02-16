@@ -6,7 +6,7 @@ This repository provides code for the experiments in the paper
 
 Ravichandran, N., Lansner, A., & Herman, P. (2024). Spiking representation learning for associative memories. Frontiers in Neuroscience, 18, 1439414. (https://www.frontiersin.org/journals/neuroscience/articles/10.3389/fnins.2024.1439414/full)
 
-The code is implemented in C++, with MPI for message passing and HIP for GPU parallelization. It can also be converted easilily to CUDA and run on NVIDIA GPUs (https://rocm.docs.amd.com/projects/HIP/en/develop/user_guide/hip_porting_guide.html).
+The code is implemented in C++, with MPI for message passing and CUDA for GPU parallelization. It can also be converted easilily to HIP and run on AMD GPUs (https://rocm.docs.amd.com/projects/HIP/en/develop/user_guide/hip_porting_guide.html).
 
 # Extract MNIST dataset
 ```
