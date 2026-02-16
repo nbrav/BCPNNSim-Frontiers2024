@@ -41,8 +41,8 @@ nampl                   0.001                 	# noise amplitude
 nusupepoch              5 # 25                  # number of unsupervised training epochs
 nsupepoch               25                     	# number of supervised classifier training epochs
 
-ntrpat                  1000               	    # number of train patterns
-ntepat                  1000                	# number of test patterns
+ntrpat                  60000               	    # number of train patterns
+ntepat                  10000                	# number of test patterns
 nvalpat                 0 			            # number of validation patterns
 
 datadir                 Data/mnist/        # directory for data files
